@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Lập trình viên AI Tương lai</title>
+    
+    <!-- Tailwind CSS (Framework CSS hiện đại) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome (Icon) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Cấu hình Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#3B82F6', // Xanh dương chủ đạo
+                        secondary: '#10B981', // Xanh lá điểm nhấn
+                        dark: '#0f172a',
+                        card: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom CSS cho các hiệu ứng không có sẵn trong Tailwind */
+        body {
+            background-color: #0f172a; /* Nền tối */
+            color: #f8fafc; /* Chữ sáng */
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #3B82F6, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hiệu ứng nổi lên khi cuộn trang */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hiệu ứng hover cho ảnh */
+        .img-hover-zoom {
+            overflow: hidden;
+        }
+        .img-hover-zoom img {
+            transition: transform 0.5s ease;
+        }
+        .img-hover-zoom:hover img {
+            transform: scale(1.1);
+        }
+
+        /* CSS cho Modal (Cửa sổ chi tiết) */
+        #detail-modal {
+            transition: opacity 0.3s ease;
+        }
+        #detail-modal.hidden {
+            display: none;
+            opacity: 0;
+            pointer-events: none;
+        }
+        #detail-modal:not(.hidden) {
+            display: flex; /* Sử dụng flex để căn giữa */
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .clickable-item {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .clickable-item:hover {
+            transform: translateX(5px);
+            color: #3B82F6; /* Màu primary */
+        }
+        .clickable-card {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <!-- NAVIGATION MENU -->
+    <nav class="fixed w-full z-50 bg-dark/90 backdrop-blur-md border-b border-gray-700 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo / Tên -->
+                <div class="flex-shrink-0 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <img src="assets/logo.jpg" alt="Logo" class="h-10 object-contain">
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="hover:text-primary transition px-3 py-2 rounded-md text-sm font-medium">Trang chủ</a>
+                        <a href="#about" class="hover:text-primary transition px-3 py-2 rounded-md text-sm font-medium">Giới thiệu</a>
+                        <a href="#major" class="hover:text-primary transition px-3 py-2 rounded-md text-sm font-medium">Chuyên ngành AI</a>
+                        <a href="#portfolio" class="hover:text-primary transition px-3 py-2 rounded-md text-sm font-medium">Sản phẩm</a>
+                        <a href="#contact" class="bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-full transition text-sm font-medium">Liên hệ</a>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="-mr-2 flex md:hidden">
+                    <button id="mobile-menu-btn" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div class="md:hidden hidden bg-card border-b border-gray-700" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700 hover:text-white">Trang chủ</a>
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700 hover:text-white">Giới thiệu</a>
+                <a href="#major" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700 hover:text-white">Chuyên ngành AI</a>
+                <a href="#portfolio" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700 hover:text-white">Sản phẩm</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-primary">Liên hệ</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HEADER / HERO SECTION -->
+    <section id="home" class="min-h-screen flex items-center justify-center pt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col-reverse md:flex-row items-center">
+            
+            <!-- Text Content -->
+            <div class="w-full md:w-1/2 text-center md:text-left mt-8 md:mt-0 reveal active">
+                <h2 class="text-primary font-semibold tracking-wide uppercase text-sm mb-2">Xin chào, tôi là</h2>
+                <h1 class="text-4xl md:text-6xl font-bold mb-2">Huỳnh Tấn Phát</h1>
+                
+                <!-- DÒNG MSSV -->
+                <p class="text-lg md:text-xl text-gray-400 font-medium mb-4">MSSV: <span class="text-white">PK04415</span></p>
+                
+                <p class="text-xl text-gray-400 mb-6 leading-relaxed">
+                    Sinh viên Lập trình ứng dụng <br>
+                    <span class="text-secondary font-bold text-2xl md:text-3xl">Trí tuệ nhân tạo (AI)</span>
+                </p>
+                
+                <p class="text-gray-400 mb-8 max-w-lg mx-auto md:mx-0">
+                    Đam mê xây dựng các mô hình học máy thông minh và phát triển ứng dụng web tích hợp AI để giải quyết các vấn đề thực tế.
+                </p>
+                
+                <!-- Social Icons -->
+                <div class="flex justify-center md:justify-start space-x-6">
+                    <a href="https://zalo.me/0773549077" target="_blank" class="transform hover:scale-110 transition duration-300">
+                        <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-blue-500/50">
+                            <span class="font-bold text-white text-xs">Zalo</span>
+                        </div>
+                    </a>
+                    <a href="https://www.facebook.com/tan.phat.933258/" target="_blank" class="transform hover:scale-110 transition duration-300">
+                        <div class="w-12 h-12 bg-[#1877F2] rounded-full flex items-center justify-center shadow-lg hover:shadow-[#1877F2]/50">
+                            <i class="fab fa-facebook-f text-white text-xl"></i>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/phattan854/" target="_blank" class="transform hover:scale-110 transition duration-300">
+                        <div class="w-12 h-12 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-pink-500/50">
+                            <i class="fab fa-instagram text-white text-xl"></i>
+                        </div>
+                    </a>
+                    <a href="https://tiktok.com/@2148860911" target="_blank" class="transform hover:scale-110 transition duration-300">
+                        <div class="w-12 h-12 bg-black border border-gray-700 rounded-full flex items-center justify-center shadow-lg hover:shadow-gray-500/50">
+                            <i class="fab fa-tiktok text-white text-xl"></i>
+                        </div>
+                    </a>
+                    <a href="https://github.com/zazahek1" target="_blank" class="transform hover:scale-110 transition duration-300">
+                        <div class="w-12 h-12 bg-gray-800 border border-gray-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-gray-500/50">
+                            <i class="fab fa-github text-white text-xl"></i>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="mt-8">
+                    <a href="#contact" class="inline-block bg-primary hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:-translate-y-1">
+                        Liên hệ ngay
+                    </a>
+                </div>
+            </div>
+
+            <!-- Image/Avatar -->
+            <div class="w-full md:w-1/2 flex justify-center reveal">
+                <div class="relative w-64 h-64 md:w-80 md:h-80">
+                    <div class="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-full blur-xl opacity-50 animate-pulse"></div>
+                    <img src="assets/anh-ca-nhan.jpg" alt="Avatar" class="relative w-full h-full object-cover rounded-full border-4 border-gray-800 shadow-2xl">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="py-20 bg-card/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-3xl font-bold mb-4"><span class="border-b-4 border-primary pb-1">Thông Tin Của Tôi</span></h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 reveal">
+                <!-- Info cards (Giữ nguyên) -->
+                <div class="bg-card p-6 rounded-xl border border-gray-700 hover:border-primary transition duration-300 shadow-lg text-center">
+                    <div class="w-14 h-14 mx-auto bg-gray-700 rounded-full flex items-center justify-center mb-4 text-primary"><i class="fas fa-id-card text-2xl"></i></div>
+                    <h3 class="text-xl font-semibold mb-2">Sinh viên</h3>
+                    <p class="text-gray-400">Mã SV: <span class="text-white font-bold">PK04415</span></p>
+                    <p class="text-gray-400">Trường Cao đẳng FPT Polytechnic</p>
+                </div>
+                <div class="bg-card p-6 rounded-xl border border-gray-700 hover:border-primary transition duration-300 shadow-lg text-center">
+                    <div class="w-14 h-14 mx-auto bg-gray-700 rounded-full flex items-center justify-center mb-4 text-primary"><i class="fas fa-envelope text-2xl"></i></div>
+                    <h3 class="text-xl font-semibold mb-2">Email</h3>
+                    <p class="text-gray-400">phathtpk04415@gmail.com</p>
+                </div>
+                <div class="bg-card p-6 rounded-xl border border-gray-700 hover:border-primary transition duration-300 shadow-lg text-center">
+                    <div class="w-14 h-14 mx-auto bg-gray-700 rounded-full flex items-center justify-center mb-4 text-primary"><i class="fas fa-phone text-2xl"></i></div>
+                    <h3 class="text-xl font-semibold mb-2">Điện thoại</h3>
+                    <p class="text-gray-400">077 354 9077</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI MAJOR & ROADMAP SECTION -->
+    <section id="major" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl font-bold mb-4">Chuyên Ngành <span class="gradient-text">Trí Tuệ Nhân Tạo</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    Khám phá sức mạnh của công nghệ tương lai. <br><span class="text-sm italic">
+                </p>
+            </div>
+
+            <!-- Phần 1: Tổng quan & Lộ trình -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
+                <!-- Description -->
+                <div class="reveal">
+                    <h3 class="text-2xl font-semibold mb-4 text-white">Tổng Quan Về Ngành</h3>
+                    <p class="text-gray-400 mb-4 leading-relaxed text-justify">
+                        <strong>Trí tuệ nhân tạo (AI)</strong> là một nhánh của khoa học máy tính liên quan đến việc xây dựng các máy móc thông minh. Sinh viên được trang bị kiến thức về Machine Learning, Computer Vision, và NLP.
+                    </p>
+                    
+                    <!-- CÁC MỤC NÀY ĐÃ ĐƯỢC THÊM SỰ KIỆN ONCLICK -->
+                    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                        <li class="clickable-item flex items-center text-gray-300 bg-card p-2 rounded border border-gray-700" onclick="openDetail('ml')">
+                            <i class="fas fa-brain text-secondary mr-2"></i> Machine Learning
+                        </li>
+                        <li class="clickable-item flex items-center text-gray-300 bg-card p-2 rounded border border-gray-700" onclick="openDetail('cv')">
+                            <i class="fas fa-eye text-secondary mr-2"></i> Computer Vision
+                        </li>
+                        <li class="clickable-item flex items-center text-gray-300 bg-card p-2 rounded border border-gray-700" onclick="openDetail('nlp')">
+                            <i class="fas fa-comments text-secondary mr-2"></i> NLP (Xử lý ngôn ngữ)
+                        </li>
+                        <li class="clickable-item flex items-center text-gray-300 bg-card p-2 rounded border border-gray-700" onclick="openDetail('robotics')">
+                            <i class="fas fa-robot text-secondary mr-2"></i> Robotics
+                        </li>
+                    </ul>
+                    <img src="assets/background.jpg?auto=format&fit=crop&q=80&w=600" alt="AI Overview" class="rounded-xl shadow-lg border border-gray-700 w-full object-cover h-56">
+                </div>
+
+                <!-- Roadmap Timeline (Giữ nguyên) -->
+                <div class="reveal">
+                    <h3 class="text-2xl font-semibold mb-6 text-white">Lộ Trình Học Tập</h3>
+                    <div class="border-l-2 border-primary ml-3 space-y-8">
+                        <div class="relative pl-8">
+                            <span class="absolute -left-[9px] top-0 w-5 h-5 bg-primary rounded-full border-4 border-dark"></span>
+                            <h4 class="text-lg font-bold text-white">Năm 1: Nền tảng vững chắc</h4>
+                            <p class="text-gray-400 mt-2 text-sm">Lập trình Python/C++, Đại số tuyến tính, Giải tích.</p>
+                        </div>
+                        <div class="relative pl-8">
+                            <span class="absolute -left-[9px] top-0 w-5 h-5 bg-primary rounded-full border-4 border-dark"></span>
+                            <h4 class="text-lg font-bold text-white">Năm 2: Machine Learning & Data</h4>
+                            <p class="text-gray-400 mt-2 text-sm">NumPy, Pandas, Scikit-learn, Các thuật toán ML cơ bản.</p>
+                        </div>
+                        <div class="relative pl-8">
+                            <span class="absolute -left-[9px] top-0 w-5 h-5 bg-primary rounded-full border-4 border-dark"></span>
+                            <h4 class="text-lg font-bold text-white">Năm 3: Deep Learning & Chuyên sâu</h4>
+                            <p class="text-gray-400 mt-2 text-sm">TensorFlow/PyTorch, CNN, RNN, Transformers.</p>
+                        </div>
+                        <div class="relative pl-8">
+                            <span class="absolute -left-[9px] top-0 w-5 h-5 bg-primary rounded-full border-4 border-dark"></span>
+                            <h4 class="text-lg font-bold text-gray-300">Năm 4: Đồ án & Thực tập</h4>
+                            <p class="text-gray-400 mt-2 text-sm">MLOps, Triển khai Cloud, Đồ án tốt nghiệp.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phần 2: Ứng Dụng Thực Tiễn -->
+            <div class="reveal">
+                <div class="text-center mb-10">
+                    <h3 class="text-2xl font-bold mb-2">Ứng Dụng AI Vào Đời Sống</h3>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- App 1: Y tế -->
+                    <div class="clickable-card bg-card p-5 rounded-xl border border-gray-700 hover:-translate-y-2 transition duration-300 hover:border-blue-400" onclick="openDetail('healthcare')">
+                        <div class="text-blue-400 text-4xl mb-4"><i class="fas fa-user-md"></i></div>
+                        <h4 class="text-lg font-bold text-white mb-2">Y Tế & Sức Khỏe</h4>
+                        <p class="text-gray-400 text-sm">Hỗ trợ chẩn đoán bệnh, phát hiện ung thư sớm...</p>
+                    </div>
+
+                    <!-- App 2: Tài chính -->
+                    <div class="clickable-card bg-card p-5 rounded-xl border border-gray-700 hover:-translate-y-2 transition duration-300 hover:border-green-400" onclick="openDetail('fintech')">
+                        <div class="text-green-400 text-4xl mb-4"><i class="fas fa-chart-line"></i></div>
+                        <h4 class="text-lg font-bold text-white mb-2">Tài Chính & Fintech</h4>
+                        <p class="text-gray-400 text-sm">Phát hiện gian lận, dự báo chứng khoán...</p>
+                    </div>
+
+                    <!-- App 3: E-commerce -->
+                    <div class="clickable-card bg-card p-5 rounded-xl border border-gray-700 hover:-translate-y-2 transition duration-300 hover:border-purple-400" onclick="openDetail('ecommerce')">
+                        <div class="text-purple-400 text-4xl mb-4"><i class="fas fa-shopping-cart"></i></div>
+                        <h4 class="text-lg font-bold text-white mb-2">E-commerce</h4>
+                        <p class="text-gray-400 text-sm">Gợi ý sản phẩm, Chatbot CSKH...</p>
+                    </div>
+
+                    <!-- App 4: Giao thông -->
+                    <div class="clickable-card bg-card p-5 rounded-xl border border-gray-700 hover:-translate-y-2 transition duration-300 hover:border-yellow-400" onclick="openDetail('transport')">
+                        <div class="text-yellow-400 text-4xl mb-4"><i class="fas fa-car"></i></div>
+                        <h4 class="text-lg font-bold text-white mb-2">Giao Thông</h4>
+                        <p class="text-gray-400 text-sm">Xe tự lái, tối ưu hóa đèn tín hiệu...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PORTFOLIO / PRODUCTS SECTION -->
+    <section id="portfolio" class="py-20 bg-card/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-3xl font-bold mb-4">Sản Phẩm Minh Họa</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1 (Google Drive Video) -->
+                <div class="bg-dark rounded-xl overflow-hidden shadow-lg border border-gray-700 reveal group">
+                    <div class="h-48 overflow-hidden relative bg-black">
+                        <!-- Google Drive Embed (Lưu ý: đổi /view thành /preview) -->
+                        <iframe 
+                            src="https://drive.google.com/file/d/1hl7Fg0drfrxSbOe7KHR2siglQrnHj1bC/preview" 
+                            class="w-full h-full" 
+                            allow="autoplay"
+                            frameborder="0">
+                        </iframe>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold mb-2 text-primary">Sử dụng AI để tạo video ca nhạc</h3>
+                        <p class="text-gray-400 text-sm mb-4">Sử dụng AI để tạo lời bài hát và tạo nhạc. Có nhân vật thì sử dụng kỹ thuật AI Lip Sync </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs bg-gray-800 px-2 py-1 rounded text-gray-300">Python</span>
+                            <span class="text-xs bg-gray-800 px-2 py-1 rounded text-gray-300">C++</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 (Google Drive Video) -->
+                <div class="bg-dark rounded-xl overflow-hidden shadow-lg border border-gray-700 reveal group">
+                    <div class="h-48 overflow-hidden relative bg-black">
+                        <!-- Google Drive Embed (Lưu ý: đổi /view thành /preview) -->
+                        <iframe 
+                            src="https://drive.google.com/file/d/1J5XMXdeW0Lt98PDN8oepEfk5W9BUPshx/preview" 
+                            class="w-full h-full" 
+                            allow="autoplay"
+                            frameborder="0">
+                        </iframe>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold mb-2 text-primary">Sử dụng AI trong thông tin</h3>
+                        <p class="text-gray-400 text-sm mb-4">Tổng hợp các thông tin chính từ các nguồn như video, văn bản</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs bg-gray-800 px-2 py-1 rounded text-gray-300">Python</span>
+                            <span class="text-xs bg-gray-800 px-2 py-1 rounded text-gray-300">C++</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 (Google Drive Video) -->
+                <div class="bg-dark rounded-xl overflow-hidden shadow-lg border border-gray-700 reveal group">
+                    <div class="h-48 overflow-hidden relative bg-black">
+                        <!-- Google Drive Embed (Lưu ý: đổi /view thành /preview) -->
+                        <iframe 
+                            src="https://drive.google.com/file/d/19pCng136YZJVPTWPqhIDUfUd-5tZOKjc/preview" 
+                            class="w-full h-full" 
+                            allow="autoplay"
+                            frameborder="0">
+                        </iframe>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold mb-2 text-primary">Sử dụng AI để lên kịch bản video</h3>
+                        <p class="text-gray-400 text-sm mb-4">Làm video hoạt hình từ AI từ lên kịch bản đến sản phẩm hoàn thiện</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs bg-gray-800 px-2 py-1 rounded text-gray-300">Python</span>
+                            <span class="text-xs bg-gray-800 px-2 py-1 rounded text-gray-300">C++</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4 (Google Drive Video) -->
+                <div class="bg-dark rounded-xl overflow-hidden shadow-lg border border-gray-700 reveal group">
+                    <div class="h-48 overflow-hidden relative bg-black">
+                        <!-- Google Drive Embed (Lưu ý: đổi /view thành /preview) -->
+                        <iframe 
+                            src="https://drive.google.com/file/d/1oPE5nCBFCGNGW01PNiIF00J_kdcpukNS/preview" 
+                            class="w-full h-full" 
+                            allow="autoplay"
+                            frameborder="0">
+                        </iframe>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold mb-2 text-primary">AI trong nhận diện</h3>
+                        <p class="text-gray-400 text-sm mb-4">Sử dụng ai để nhận diện mọi thứ</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs bg-gray-800 px-2 py-1 rounded text-gray-300">Python</span>
+                            <span class="text-xs bg-gray-800 px-2 py-1 rounded text-gray-300">C++</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT & FOOTER -->
+    <footer id="contact" class="bg-dark pt-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center pb-8">
+                <div class="mb-6 md:mb-0">
+                    <img src="assets/logo.jpg" class="h-10 mb-2 object-contain">
+                    <p class="text-gray-500 mt-2 text-sm max-w-xs">Kết nối với tôi để thảo luận về công nghệ và các dự án thú vị.</p>
+                </div>
+                <div class="flex space-x-6 items-center">
+                    <a href="https://zalo.me/0773549077" target="_blank" class="text-gray-400 hover:text-blue-500 transition font-bold text-sm">Zalo</a>
+                    <a href="https://www.facebook.com/tan.phat.933258/" target="_blank" class="text-gray-400 hover:text-blue-600 transition"><i class="fab fa-facebook text-xl"></i></a>
+                    <a href="https://www.instagram.com/phattan854/" target="_blank" class="text-gray-400 hover:text-pink-500 transition"><i class="fab fa-instagram text-xl"></i></a>
+                    <a href="https://tiktok.com/@2148860911" target="_blank" class="text-gray-400 hover:text-white transition"><i class="fab fa-tiktok text-xl"></i></a>
+                    <a href="https://github.com/zazahek1" target="_blank" class="text-gray-400 hover:text-white transition"><i class="fab fa-github text-xl"></i></a>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 py-6 text-center">
+                <p class="text-gray-500 text-sm">&copy; 2025 Huỳnh Tấn Phát - PK04415 - phathtpk04415@gmail.com. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL CHI TIẾT (Ẩn mặc định) -->
+    <div id="detail-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-gray-900 rounded-2xl shadow-2xl max-w-3xl w-full border border-gray-700 overflow-hidden relative animate-[fadeIn_0.3s_ease-out]">
+            <!-- Nút đóng -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-black/50 hover:bg-red-500 rounded-full w-8 h-8 flex items-center justify-center transition z-10">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="flex flex-col md:flex-row h-full max-h-[80vh]">
+                <!-- Ảnh bên trái -->
+                <div class="w-full md:w-2/5 h-48 md:h-auto relative">
+                    <img id="modal-img" src="" alt="Detail Image" class="absolute inset-0 w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent md:bg-gradient-to-r"></div>
+                </div>
+
+                <!-- Nội dung bên phải (có scroll) -->
+                <div class="w-full md:w-3/5 p-8 overflow-y-auto">
+                    <h2 id="modal-title" class="text-3xl font-bold mb-4 text-primary">Tiêu đề</h2>
+                    <div id="modal-content" class="text-gray-300 leading-relaxed space-y-4">
+                        <!-- Nội dung sẽ được Javascript điền vào đây -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // 1. DỮ LIỆU CHI TIẾT CÁC MỤC (BẠN CÓ THỂ SỬA NỘI DUNG TẠI ĐÂY)
+        const detailsContent = {
+            // CÁC MỤC CỐT LÕI
+            'ml': {
+                title: 'Machine Learning (Học máy)',
+                image: 'assets/Machine-Learning.jpg?auto=format&fit=crop&q=80&w=600',
+                content: `
+                    <p>Machine Learning là cốt lõi của trí tuệ nhân tạo hiện đại. Nó tập trung vào việc phát triển các thuật toán cho phép máy tính học hỏi từ dữ liệu và đưa ra dự đoán hoặc quyết định mà không cần được lập trình rõ ràng cho từng tác vụ cụ thể.</p>
+                    <h4 class="text-white font-bold mt-4">Các kỹ thuật chính:</h4>
+                    <ul class="list-disc ml-5 mt-2">
+                        <li><strong>Supervised Learning:</strong> Học có giám sát (Phân loại thư rác, dự đoán giá nhà).</li>
+                        <li><strong>Unsupervised Learning:</strong> Học không giám sát (Gom nhóm khách hàng, giảm chiều dữ liệu).</li>
+                        <li><strong>Reinforcement Learning:</strong> Học tăng cường (Robot học đi, AlphaGo chơi cờ).</li>
+                    </ul>
+                `
+            },
+            'cv': {
+                title: 'Computer Vision (Thị giác máy tính)',
+                image: 'assets/Computer Vision.jpg?auto=format&fit=crop&q=80&w=600',
+                content: `
+                    <p>Lĩnh vực này giúp máy tính "nhìn" và hiểu được thế giới thông qua hình ảnh và video kỹ thuật số. Mục tiêu là tự động hóa các nhiệm vụ mà hệ thống thị giác của con người có thể làm được.</p>
+                    <h4 class="text-white font-bold mt-4">Ứng dụng tiêu biểu:</h4>
+                    <ul class="list-disc ml-5 mt-2">
+                        <li>Nhận diện khuôn mặt (FaceID).</li>
+                        <li>Phát hiện vật thể trong xe tự lái.</li>
+                        <li>Chẩn đoán y tế qua ảnh X-quang/MRI.</li>
+                    </ul>
+                `
+            },
+            'nlp': {
+                title: 'Natural Language Processing (NLP)',
+                image: 'assets/(NLP).jpg?auto=format&fit=crop&q=80&w=600',
+                content: `
+                    <p>NLP là cầu nối giữa ngôn ngữ con người và máy tính. Nó kết hợp ngôn ngữ học tính toán với các mô hình thống kê, học máy và học sâu.</p>
+                    <h4 class="text-white font-bold mt-4">Công nghệ nổi bật:</h4>
+                    <ul class="list-disc ml-5 mt-2">
+                        <li><strong>LLMs (Large Language Models):</strong> GPT-4, Gemini, Claude.</li>
+                        <li>Dịch máy tự động (Google Translate).</li>
+                        <li>Phân tích cảm xúc khách hàng từ bình luận.</li>
+                    </ul>
+                `
+            },
+            'robotics': {
+                title: 'Robotics & AI',
+                image: 'assets/Robotics & AI.jpg?auto=format&fit=crop&q=80&w=600',
+                content: `
+                    <p>Sự kết hợp giữa AI và Robotics tạo ra các robot thông minh có khả năng nhận thức môi trường và thực hiện các tác vụ phức tạp trong thế giới thực.</p>
+                    <p class="mt-2">Từ robot hút bụi trong gia đình đến cánh tay robot trong dây chuyền sản xuất tự động, AI đóng vai trò là "bộ não" điều khiển hành vi của robot.</p>
+                `
+            },
+            
+            // CÁC ỨNG DỤNG THỰC TIỄN
+            'healthcare': {
+                title: 'AI trong Y Tế',
+                image: 'assets/AI-Y-Tế.jpg?auto=format&fit=crop&q=80&w=600',
+                content: `
+                    <p>AI đang tạo ra cuộc cách mạng trong y học, giúp các bác sĩ chẩn đoán nhanh hơn và chính xác hơn.</p>
+                    <ul class="list-disc ml-5 mt-2">
+                        <li>Phát hiện khối u ung thư sớm với độ chính xác cao hơn mắt thường.</li>
+                        <li>Cá nhân hóa phác đồ điều trị dựa trên gen của bệnh nhân.</li>
+                        <li>Robot hỗ trợ phẫu thuật với độ xâm lấn tối thiểu.</li>
+                    </ul>
+                `
+            },
+            'fintech': {
+                title: 'AI trong Tài Chính (Fintech)',
+                image: 'assets/AI-Tài-Chính.jpg?auto=format&fit=crop&q=80&w=600',
+                content: `
+                    <p>Các thuật toán AI xử lý hàng triệu giao dịch mỗi giây để bảo vệ tiền của khách hàng và tối ưu hóa đầu tư.</p>
+                    <ul class="list-disc ml-5 mt-2">
+                        <li>Phát hiện gian lận thẻ tín dụng theo thời gian thực.</li>
+                        <li>Giao dịch thuật toán (Algorithmic Trading) tần suất cao.</li>
+                        <li>Đánh giá điểm tín dụng (Credit Scoring) tự động.</li>
+                    </ul>
+                `
+            },
+            'ecommerce': {
+                title: 'AI trong Thương Mại Điện Tử',
+                image: 'assets/AI-Thương-Mai.jpg?auto=format&fit=crop&q=80&w=600',
+                content: `
+                    <p>AI giúp các sàn thương mại điện tử hiểu rõ khách hàng hơn bao giờ hết.</p>
+                    <ul class="list-disc ml-5 mt-2">
+                        <li>Hệ thống gợi ý (Recommendation System): "Người mua sản phẩm này cũng mua...".</li>
+                        <li>Tìm kiếm bằng hình ảnh.</li>
+                        <li>Tối ưu hóa kho vận và lộ trình giao hàng.</li>
+                    </ul>
+                `
+            },
+            'transport': {
+                title: 'AI trong Giao Thông Vận Tải',
+                image: 'assets/AI-Giao-Thông.jpg?auto=format&fit=crop&q=80&w=600',
+                content: `
+                    <p>Tương lai của di chuyển là tự động hóa và thông minh hóa nhờ AI.</p>
+                    <ul class="list-disc ml-5 mt-2">
+                        <li>Xe tự lái (Self-driving cars) cấp độ 4, 5.</li>
+                        <li>Hệ thống đèn giao thông thông minh giảm tắc đường.</li>
+                        <li>Dự báo nhu cầu đặt xe (như Grab/Uber) để điều phối tài xế.</li>
+                    </ul>
+                `
+            }
+        };
+
+        // 2. HÀM MỞ/ĐÓNG MODAL
+        const modal = document.getElementById('detail-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalImg = document.getElementById('modal-img');
+        const modalContent = document.getElementById('modal-content');
+
+        function openDetail(key) {
+            const data = detailsContent[key];
+            if (data) {
+                modalTitle.innerText = data.title;
+                modalImg.src = data.image;
+                modalContent.innerHTML = data.content;
+                
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Khóa cuộn trang chính
+            }
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Mở lại cuộn trang
+        }
+
+        // Đóng modal khi click ra ngoài vùng nội dung
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // 3. CÁC HIỆU ỨNG CŨ (Mobile Menu & Scroll Reveal)
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        if(btn){
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+        }
+
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal();
+    </script>
+</body>
+</html>
